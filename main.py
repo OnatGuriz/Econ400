@@ -70,19 +70,32 @@ def utilFunc(es_1, er_1, es_2, er_2):
 Action_SpaceTotal = genActionSpace(movesetSaving1 , movesetSaving2 , movesetRecog1 , movesetRecog2)
 value = Action_SpaceTotal[0]
 
-#find the expected utility of both agents in every entry
-for i in range (0,len(Action_SpaceTotal)):
-    print(i)
-    value = Action_SpaceTotal[i]
-    Action_SpaceTotal[i] = utilFunc(value[0][0] , value[0][1], value[1][0], value[1][1])
+#create a new matrix to compute the expected utilities at every entry
+EU_Matrix = Action_SpaceTotal.copy()
 
+#find the expected utility of both agents in every entry
+for i in range (0,len(EU_Matrix)):
+    value = EU_Matrix[i]
+    EU_Matrix[i] = utilFunc(value[0][0] , value[0][1], value[1][0], value[1][1])
 
 
 #got it from https://stackoverflow.com/questions/3636344/read-flat-list-into-multidimensional-array-matrix-in-python
 #maps every possible action into a matrix
-col = len(movesetSaving2) * len(movesetRecog2)
+col = len(movesetSaving1) * len(movesetRecog1)
+ActionMatrixUtil = np.array([EU_Matrix[i:i+col] for i in range (0,len(EU_Matrix), col)])
 ActionMatrix = np.array([Action_SpaceTotal[i:i+col] for i in range (0,len(Action_SpaceTotal), col)])
 
+row_num = len(ActionMatrixUtil)
+col_num = len(ActionMatrixUtil[0])
+print(ActionMatrixUtil[2,0:])
+print("break")
+print(ActionMatrixUtil[2,0:][0:,1])
+
+#find the maximum of agent 2 utility at every column
+
+#find the maximum of agent 1 utility at every row
+
 np.set_printoptions(precision= 2)
-print(ActionMatrix)
+#print(ActionMatrix)
+
 
