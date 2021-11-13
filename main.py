@@ -6,6 +6,7 @@ Created on Thu Nov 11 13:07:32 2021
 """
 import itertools
 import numpy as np
+import pandas as pd
 
 # define the talents and budget
 M_1 = 250
@@ -35,14 +36,16 @@ if all(value >= 0 for value in movesetRecog2) & all(value <= M_2 for value in mo
 
 # generate the action space
 def genActionSpace(movesetSaving1 , movesetSaving2 , movesetRecog1 , movesetRecog2):
-    actionSpace1 = itertools.product(movesetSaving1 , movesetRecog1)
-    actionSpace2 = itertools.product(movesetSaving2 , movesetRecog2)
-    actionSpace = list(itertools.product(actionSpace1, actionSpace2))
-    return actionSpace
+    actionSpace1 = tuple(itertools.product(movesetSaving1 , movesetRecog1))
+    actionSpace2 = tuple(itertools.product(movesetSaving2 , movesetRecog2))
+    actionSpace = tuple(itertools.product(actionSpace1, actionSpace2))
+    return actionSpace1,actionSpace2,actionSpace
+""" this function returns 
+all possible actions of 1 at entry 0
+all possible actions of 2 at enry 1
+all jointly possible actions at entry 2
+"""
 
-#the format of the actionSpace is ((es_1 , er_1) , (es_2 , er_2))
-
-#print(genActionSpace(movesetSaving1 , movesetSaving2 , movesetRecog1 , movesetRecog2))
 
 # computing the output
 def prodFunc(es_1, es_2):
@@ -63,39 +66,36 @@ def utilFunc(es_1, er_1, es_2, er_2):
     EU_1 = (recogProb(er_1, er_2)[0] * prodFunc(es_1, es_2)) + (M_1 - es_1 - er_1)
     EU_2 = (recogProb(er_1, er_2)[1] * prodFunc(es_1, es_2)) + (M_2 - es_2 - er_2)
     return EU_1, EU_2
+
 #value[0][] = agent 1 , value [1][] = agent2
 #value[][0] = saving , value [][1] = recognition
 
-#All possible actions
+#All possible actions mapped to a dataframe
 Action_SpaceTotal = genActionSpace(movesetSaving1 , movesetSaving2 , movesetRecog1 , movesetRecog2)
-value = Action_SpaceTotal[0]
+Action_SpaceTotal_df = pd.DataFrame(Action_SpaceTotal[2])
 
-#create a new matrix to compute the expected utilities at every entry
-EU_Matrix = Action_SpaceTotal.copy()
-
-#find the expected utility of both agents in every entry
-for i in range (0,len(EU_Matrix)):
-    value = EU_Matrix[i]
-    EU_Matrix[i] = utilFunc(value[0][0] , value[0][1], value[1][0], value[1][1])
+colnames = Action_SpaceTotal[0]
+rownames= Action_SpaceTotal[1]
 
 
-#got it from https://stackoverflow.com/questions/3636344/read-flat-list-into-multidimensional-array-matrix-in-python
-#maps every possible action into a matrix
-col = len(movesetSaving1) * len(movesetRecog1)
-ActionMatrixUtil = np.array([EU_Matrix[i:i+col] for i in range (0,len(EU_Matrix), col)])
-ActionMatrix = np.array([Action_SpaceTotal[i:i+col] for i in range (0,len(Action_SpaceTotal), col)])
+#row and columns for reference
+print("colnames: " + str(colnames))
+print("rownames: " + str(rownames))
 
-row_num = len(ActionMatrixUtil)
-col_num = len(ActionMatrixUtil[0])
-print(ActionMatrixUtil[2,0:])
-print("break")
-print(ActionMatrixUtil[2,0:][0:,1])
 
-#find the maximum of agent 2 utility at every column
+#Here we set the row names and column names first
+ActionFrame_df = pd.DataFrame(columns= colnames, index = rownames)
+#then we assign their respective values
+#bu donguyu kurana kadar omrum bitti
+for i in range(0, len(rownames)):
+    for j in range(0, len(colnames)):
+        ActionFrame_df.iloc[j,i] = tuple((colnames[i]+rownames[j]))
 
-#find the maximum of agent 1 utility at every row
+#now we will compute all possible utilites on the action space dataframe
+UtilityFrame_df = ActionFrame_df.copy()
 
-np.set_printoptions(precision= 2)
-#print(ActionMatrix)
+
+
+print(ActionFrame_df)
 
 
