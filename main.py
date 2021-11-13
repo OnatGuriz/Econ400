@@ -9,20 +9,20 @@ import numpy as np
 import pandas as pd
 
 # define the talents and budget
-M_1 = 250
-M_2 = 250
+M_1 = 400
+M_2 = 400
 
 ar_1 = 1
 ar_2 = 1
-as_1 = 1
+as_1 = 3
 as_2 = 3
 
 
-movesetSaving1 = [0, 11]
-movesetSaving2 = [0, 21]
+movesetSaving1 = [0, 100]
+movesetSaving2 = [0, 200]
 
-movesetRecog1 = [0, 12]
-movesetRecog2 = [0, 22]
+movesetRecog1 = [0, 100]
+movesetRecog2 = [0, 200]
 
 #check for feasibility issues
 if all(value >= 0 for value in movesetSaving1) & all(value <= M_1 for value in movesetSaving1):
@@ -61,10 +61,10 @@ def recogProb(er_1, er_2):
         return ((p1_recog, p2_recog))
 
 
-# computing the estimated utilities
+# computing the estimated utilities with 2 decimals
 def utilFunc(es_1, er_1, es_2, er_2):
-    EU_1 = (recogProb(er_1, er_2)[0] * prodFunc(es_1, es_2)) + (M_1 - es_1 - er_1)
-    EU_2 = (recogProb(er_1, er_2)[1] * prodFunc(es_1, es_2)) + (M_2 - es_2 - er_2)
+    EU_1 = round((recogProb(er_1, er_2)[0] * prodFunc(es_1, es_2)) + (M_1 - es_1 - er_1),2)
+    EU_2 = round((recogProb(er_1, er_2)[1] * prodFunc(es_1, es_2)) + (M_2 - es_2 - er_2),2)
     return EU_1, EU_2
 
 #value[0][] = agent 1 , value [1][] = agent2
@@ -91,11 +91,18 @@ for i in range(0, len(rownames)):
     for j in range(0, len(colnames)):
         ActionFrame_df.iloc[j,i] = tuple((colnames[i]+rownames[j]))
 
-#now we will compute all possible utilites on the action space dataframe
+
+"""" Format of the Dataframes
+     Top : I^1_s , I^1_r
+     Left: I^2_s , I^2_r
+     Payoffs : (EU_1 , EU_2)
+ """
+#now we will compute all possible utilites on the action space dataframe to get utilities
 UtilityFrame_df = ActionFrame_df.copy()
 
-
-
-print(ActionFrame_df)
+for i in range(0, len(rownames)):
+    for j in range(0, len(colnames)):
+        value = UtilityFrame_df.iloc[i, j]
+        UtilityFrame_df.iloc[i,j] = utilFunc(value[0], value[1], value[2], value[3])
 
 
