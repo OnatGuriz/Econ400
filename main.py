@@ -33,10 +33,14 @@ if(gametype == "NT"):
     M_2 = int(input("Agent 2 Budget: "))
 
 if (gametype == "T"):
-    moveset_1_input = input("Enter all possible saving moves of agent 1 separated by space : ")
-    moveset_1 = [int(value) for value in moveset_1_input.split()]
-    moveset_2_input = input("Enter all possible saving moves of agent 2 separated by space : ")
-    moveset_2 = [int(value) for value in moveset_2_input.split()]
+    movesetS_1_input = input("Enter all possible saving moves of agent 1 separated by space : ")
+    movesetS_1 = [int(value) for value in movesetS_1_input.split()]
+    movesetS_2_input = input("Enter all possible saving moves of agent 2 separated by space : ")
+    movesetS_2 = [int(value) for value in movesetS_2_input.split()]
+    movesetR_1_input = input("Enter all possible recognition moves of agent 1 separated by space : ")
+    movesetR_1 = [int(value) for value in movesetR_1_input.split()]
+    movesetR_2_input = input("Enter all possible recognition moves of agent 1 separated by space : ")
+    movesetR_2 = [int(value) for value in movesetR_2_input.split()]
     M_1 = int(input("Agent 1 Budget: "))
     M_2 = int(input("Agent 2 Budget: "))
 
@@ -48,15 +52,11 @@ def genActionSpace_NT(movesetSaving1, movesetSaving2, movesetRecog1, movesetReco
     return actionSpace1, actionSpace2
 
 #https://stackoverflow.com/questions/27891032/python-cartesian-product-and-conditions
-def genActionSpace_T(moveset_1, moveset_2):
-    movesetRecog1_T = []
-    movesetRecog2_T = []
-    movesetSaving1_T = moveset_1
-    movesetSaving2_T = moveset_2
-    for i in range(0, len(moveset_1)):
-        movesetRecog1_T.append(M_1 - moveset_1[i])
-    for i in range(0, len(moveset_2)):
-        movesetRecog2_T.append(M_2 - moveset_2[i])
+def genActionSpace_T(movesetS_1,movesetR_1,movesetS_2 ,movesetR_2):
+    movesetRecog1_T = movesetR_1
+    movesetRecog2_T = movesetR_2
+    movesetSaving1_T = movesetS_1
+    movesetSaving2_T = movesetS_2
     actionSpace1 = list(itertools.product(movesetSaving1_T, movesetRecog1_T))
     actionSpace2 = list(itertools.product(movesetSaving2_T, movesetRecog2_T))
     actionSpace1 = list(filter(lambda x: x[0] + x[1] <= M_1, actionSpace1))
@@ -100,7 +100,7 @@ def utilFunc(es_1, er_1, es_2, er_2):
 if (gametype == "NT"):
     Action_SpaceTotal = genActionSpace_NT(movesetSaving1, movesetSaving2, movesetRecog1, movesetRecog2)
 elif (gametype == "T"):
-    Action_SpaceTotal = genActionSpace_T(moveset_1, moveset_2)
+    Action_SpaceTotal = genActionSpace_T(movesetS_1,movesetR_1 ,movesetS_2,movesetR_2)
 else:
     print("choose a valid game")
     exit(1)
@@ -199,3 +199,5 @@ if NE != []:
 else:
     print("There seems to be no pure strategy NE")
     print("If you are sure there is one notify Can Güriz")
+
+print(ActionFrame_df)
