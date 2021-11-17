@@ -5,29 +5,28 @@ Created on Thu Nov 11 13:07:32 2021
 @author: cangu
 """
 import itertools
-import numpy as np
 import pandas as pd
 
 # define the talents and budget
-M_1 = 400
-M_2 = 400
 
-ar_1 = 1
-ar_2 = 1
-as_1 = 3
-as_2 = 3
+ar_1 = int(input("Recognition Talent of Agent 1: "))
+ar_2 = int(input("Recognition Talent of Agent 2: "))
+as_1 = int(input("Production Talent of Agent 1: "))
+as_2 = int(input("Production Talent of Agent 2: "))
 
-gametype = "NT"
+gametype = input("Transfer (T) or No Transfer (NT)")
 
-movesetSaving1 = [0, 100, 200]
-movesetSaving2 = [0, 100, 200]
+if(gametype = "NT"):
+    movesetSaving1 = [0, 100, 200]
+    movesetSaving2 = [0, 100, 200]
+    movesetRecog1 = [0, 100, 200]
+    movesetRecog2 = [0, 100, 200]
 
-movesetRecog1 = [0, 100, 200]
-movesetRecog2 = [0, 100, 200]
-
-moveset_1 = [0 , 100]
-moveset_2 = [0, 200]
-
+if (gametype == "T"):
+    moveset_1 = [0, 100, 200, 300, 400]
+    moveset_2 = [0, 100, 200, 300, 400]
+    M_1 = int(input("Agent 1 Budget: "))
+    M_2 = int(input("Agent 2 Budget: "))
 
 
 # generate the action space for non-transfer games
@@ -37,20 +36,21 @@ def genActionSpace_NT(movesetSaving1, movesetSaving2, movesetRecog1, movesetReco
     return actionSpace1, actionSpace2
 
 
-def genActionSpace_T(moveset_1 , moveset_2):
+def genActionSpace_T(moveset_1, moveset_2):
     movesetRecog1_T = []
     movesetRecog2_T = []
     movesetSaving1_T = moveset_1
     movesetSaving2_T = moveset_2
-    for i in range (0,len(moveset_1)):
+    for i in range(0, len(moveset_1)):
         movesetRecog1_T.append(M_1 - moveset_1[i])
-    for i in range (0,len(moveset_2)):
+    for i in range(0, len(moveset_2)):
         movesetRecog2_T.append(M_2 - moveset_2[i])
     actionSpace1 = list(itertools.product(movesetSaving1_T, movesetRecog1_T))
     actionSpace2 = list(itertools.product(movesetSaving2_T, movesetRecog2_T))
-    actionSpace1 = list(filter(lambda x: x[0]+x[1] <= M_1 , actionSpace1))
+    actionSpace1 = list(filter(lambda x: x[0] + x[1] <= M_1, actionSpace1))
     actionSpace2 = list(filter(lambda x: x[0] + x[1] <= M_2, actionSpace2))
     return actionSpace1, actionSpace2
+
 
 """ this function returns 
 all possible actions of 1 at entry 0
@@ -85,9 +85,9 @@ def utilFunc(es_1, er_1, es_2, er_2):
 # value[][0] = saving , value [][1] = recognition
 
 # All possible actions mapped to a dataframe
-if(gametype == "NT"):
+if (gametype == "NT"):
     Action_SpaceTotal = genActionSpace_NT(movesetSaving1, movesetSaving2, movesetRecog1, movesetRecog2)
-elif(gametype == "T"):
+elif (gametype == "T"):
     Action_SpaceTotal = genActionSpace_T(moveset_1, moveset_2)
 else:
     print("choose a valid game")
@@ -95,22 +95,21 @@ else:
 colnames = Action_SpaceTotal[0]
 rownames = Action_SpaceTotal[1]
 
-colnames_str=[]
-rownames_str=[]
+colnames_str = []
+rownames_str = []
 
-for i in range (0,len(colnames)):
-    colnames_str.append(str(colnames[i])) 
+for i in range(0, len(colnames)):
+    colnames_str.append(str(colnames[i]))
 
-for j in range (0, len(rownames)):
+for j in range(0, len(rownames)):
     rownames_str.append(str(rownames[j]))
 
-
 # row and columns for reference
-#print("colnames: " + str(colnames))
-#print("rownames: " + str(rownames))
+# print("colnames: " + str(colnames))
+# print("rownames: " + str(rownames))
 
 # Here we set the row names and column names first
-ActionFrame_df = pd.DataFrame(columns= colnames_str, index= rownames_str)
+ActionFrame_df = pd.DataFrame(columns=colnames_str, index=rownames_str)
 # then we assign their respective values
 # bu donguyu kurana kadar omrum bitti
 for i in range(0, len(rownames)):
@@ -122,7 +121,8 @@ for i in range(0, len(rownames)):
      Left: I^2_s , I^2_r
      Payoffs : (EU_1 , EU_2)
  """
-# now we will compute all possible utilites on the action space dataframe to get utilities and we will create a reversed one for ease of computation
+# now we will compute all possible utilities on the action space dataframe to get utilities
+# we will also create a reversed one for ease of computation
 UtilityFrame1_df = ActionFrame_df.copy()
 UtilityFrame2_df = ActionFrame_df.copy()
 UtilityFrameTotal_df = ActionFrame_df.copy()
@@ -131,34 +131,50 @@ for i in range(0, len(rownames)):
     for j in range(0, len(colnames)):
         value = UtilityFrame1_df.iloc[i, j]
         UtilityFrame1_df.iloc[i, j] = utilFunc(value[0], value[1], value[2], value[3])[0]
-        UtilityFrame2_df.iloc[i,j] = utilFunc(value[0], value[1], value[2] , value[3])[1]
-        UtilityFrameTotal_df.iloc[i,j] =  utilFunc(value[0], value[1], value[2] , value[3])
+        UtilityFrame2_df.iloc[i, j] = utilFunc(value[0], value[1], value[2], value[3])[1]
+        UtilityFrameTotal_df.iloc[i, j] = utilFunc(value[0], value[1], value[2], value[3])
 UtilityFrame1_df = UtilityFrame1_df.astype(float)
 UtilityFrame2_df = UtilityFrame2_df.astype(float)
 
-#taken from https://www.geeksforgeeks.org/python-intersection-two-lists/?ref=lbp
-def intersection(lst1, lst2):
-    lst3 = [value for value in lst1 if value in lst2]
-    return lst3
 
-#finds the NE the main problem is idxmax() returns onyl the first row if there is a tie
-#this is problematic since it might lead to it not finding any NE
+# finds the best response function with ties included
+def findBR(Payoff_1, Payoff_2):
+    BR_1 = []
+    BR_2 = []
+    maxOfPl1 = UtilityFrame1_df.max(axis=1)
+    maxOfPl2 = UtilityFrame2_df.max(axis=0)
 
-def findNE(Payoff_1 , Payoff_2):
-    BR_1 = list(zip(Payoff_1.idxmax(axis = 1).to_numpy(),Payoff_1.idxmax(axis = 1).index.to_numpy()))
-    BR_2 = list(zip(Payoff_2.idxmax(axis = 0).index.to_numpy(),Payoff_2.idxmax(axis = 0).to_numpy()))
-    NE = intersection(BR_1 , BR_2)
-    return NE
+    for i in range(0, len(colnames)):
+        BR_1.append(UtilityFrame1_df.columns[UtilityFrame1_df.iloc[i,] == maxOfPl1[i]].to_list())
+        for j in range(0, len(BR_1[i])):
+            BR_1[i][j] = BR_1[i][j] + " , " + str(rownames[i])
 
-print("The Nash Equilibrium is " + str((findNE(UtilityFrame1_df , UtilityFrame2_df))))
+    for i in range(0, len(rownames)):
+        BR_2.append(UtilityFrame2_df.index[UtilityFrame2_df.iloc[:, i] == maxOfPl2[i]].to_list())
+        for j in range(0, len(BR_2[i])):
+            BR_2[i][j] = str(colnames[i]) + " , " + BR_2[i][j]
+
+    return BR_1, BR_2
 
 
+# format the best response functions in order to easily compute the NE
+def formatBR(l1):
+    nl_1 = []
+    for i in range(len(l1)):
+        for j in range(len(l1[i])):
+            if j > 0:
+                nl_1.append(l1[i][j])
+            else:
+                nl_1.append(l1[i][0])
+    return nl_1
 
-"""
-print(UtilityFrame1_df.idxmax(axis = 1).to_numpy())
-print(UtilityFrame1_df.idxmax(axis = 1).index.to_numpy())
-print(UtilityFrame1_df.idxmax(axis= 1))
-print(UtilityFrame2_df.idxmax(axis = 0))
-"""
-# To implement the no dictator game just make the whole action process creating into a function that has an
-# if condition
+
+finalBR_1 = formatBR(findBR(UtilityFrame1_df, UtilityFrame2_df)[0])
+finalBR_2 = formatBR((findBR(UtilityFrame1_df, UtilityFrame2_df))[1])
+
+NE = list(set(finalBR_1) & set(finalBR_2))
+
+print("Nash Equilibrium/Equilibria is/are " + str(NE))
+print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
+
+
