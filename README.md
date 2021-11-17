@@ -20,7 +20,3 @@ Left: (e^2_s , e^2_r)
 Payoffs: (EU_1,EU_2)
 
 These dataframes are not shown in the Nash Equilibrium calculations. Format of the Nash Equilibrium is given in the output.
-
-As a limitation if some action a is feasible in the dictator game with no budget transfers then M_i - a must also be in the action space. For example if an agent can choose to produce 0 or 250 when budget set is 400. Then the possible recognition values are 150 and 400. 
-
-So not all transfer games are covered as of right now. 
