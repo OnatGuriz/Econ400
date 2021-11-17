@@ -199,5 +199,3 @@ if NE != []:
 else:
     print("There seems to be no pure strategy NE")
     print("If you are sure there is one notify Can Güriz")
-
-print(ActionFrame_df)
