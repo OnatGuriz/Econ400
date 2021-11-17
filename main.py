@@ -47,7 +47,7 @@ def genActionSpace_NT(movesetSaving1, movesetSaving2, movesetRecog1, movesetReco
     actionSpace2 = tuple(itertools.product(movesetSaving2, movesetRecog2))
     return actionSpace1, actionSpace2
 
-
+#https://stackoverflow.com/questions/27891032/python-cartesian-product-and-conditions
 def genActionSpace_T(moveset_1, moveset_2):
     movesetRecog1_T = []
     movesetRecog2_T = []
@@ -190,6 +190,7 @@ def formatBR(l1):
 
 finalBR_1 = formatBR(findBR(UtilityFrame1_df, UtilityFrame2_df)[0])
 finalBR_2 = formatBR((findBR(UtilityFrame1_df, UtilityFrame2_df))[1])
+
 
 NE = list(set(finalBR_1) & set(finalBR_2))
 if NE != []:
