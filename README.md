@@ -6,7 +6,7 @@ movesetSaving2 : all possible saving actions by agent 2
 movesetRecog1 : all possible recognition actions by agent 1
 movesetrecog2 : all possible recognition actions by agent 2
 
-this is for dictator game without budget transfers. If budget transfers are allowed then one set per agent is sufficient to derive an action space.
+this is for dictator game without budget transfers. If budget transfers are allowed we derive the action spaces from one set per player
 
 From these the program creates 2 dataframes ActionFrame_df and UtilityFrame_df. 
 
@@ -19,12 +19,8 @@ Top: (e^1_s , e^1_r)
 Left: (e^2_s , e^2_r) 
 Payoffs: (EU_1,EU_2)
 
-The program also checks if any element of the moveset violates the budget or non-negativity constraints if no constraints are violated the following output will occur
+These dataframes are not shown in the Nash Equilibrium calculations. Format of the Nash Equilibrium is given in the output.
 
-no problem in agent 1 saving choices
-no problem in agent 1 recognition choices
-no problem in agent 2 saving choices
-no problem in agent 2 recognition choices
+As a limitation if some action a is feasible in the dictator game with no budget transfers then M_i - a must also be in the action space. For example if an agent can choose to produce 0 or 250 when budget set is 400. Then the possible recognition values are 150 and 400. 
 
-if any of these are missing from the console log then there is a problem with the action sets that are given (currently not done)
-
+So not all transfer games are covered as of right now. 
