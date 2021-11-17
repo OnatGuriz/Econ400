@@ -14,22 +14,34 @@ ar_2 = int(input("Recognition Talent of Agent 2: "))
 as_1 = int(input("Production Talent of Agent 1: "))
 as_2 = int(input("Production Talent of Agent 2: "))
 
+#defines wheter we have transfers or not
 gametype = input("Transfer (T) or No Transfer (NT)")
 
-if(gametype = "NT"):
-    movesetSaving1 = [0, 100, 200]
-    movesetSaving2 = [0, 100, 200]
-    movesetRecog1 = [0, 100, 200]
-    movesetRecog2 = [0, 100, 200]
+#https://blog.finxter.com/how-to-convert-a-string-list-to-an-integer-list-in-python/
+if(gametype == "NT"):
+    movesetSaving1_input =  input("Enter all possible saving moves of agent 1 separated by space : ")
+    movesetSaving2_input =  input("Enter all possible saving moves of agent 2 separated by space : ")
+    movesetRecog1_input =  input("Enter all possible recognition moves of agent 1 separated by space : ")
+    movesetRecog2_input =  input("Enter all possible recognition moves of agent 2 separated by space : ")
 
-if (gametype == "T"):
-    moveset_1 = [0, 100, 200, 300, 400]
-    moveset_2 = [0, 100, 200, 300, 400]
+    movesetSaving1 = [int(value) for value in movesetSaving1_input.split()]
+    movesetSaving2 = [int(value) for value in movesetSaving2_input.split()]
+    movesetRecog1 = [int(value) for value in movesetRecog1_input.split()]
+    movesetRecog2 = [int(value) for value in movesetRecog2_input.split()]
+
     M_1 = int(input("Agent 1 Budget: "))
     M_2 = int(input("Agent 2 Budget: "))
 
+if (gametype == "T"):
+    moveset_1_input = input("Enter all possible saving moves of agent 1 separated by space : ")
+    moveset_1 = [int(value) for value in moveset_1_input.split()]
+    moveset_2_input = input("Enter all possible saving moves of agent 2 separated by space : ")
+    moveset_2 = [int(value) for value in moveset_2_input.split()]
+    M_1 = int(input("Agent 1 Budget: "))
+    M_2 = int(input("Agent 2 Budget: "))
 
-# generate the action space for non-transfer games
+#generate the action space for non-transfer games
+#https://stackoverflow.com/questions/533905/get-the-cartesian-product-of-a-series-of-lists
 def genActionSpace_NT(movesetSaving1, movesetSaving2, movesetRecog1, movesetRecog2):
     actionSpace1 = tuple(itertools.product(movesetSaving1, movesetRecog1))
     actionSpace2 = tuple(itertools.product(movesetSaving2, movesetRecog2))
@@ -91,6 +103,7 @@ elif (gametype == "T"):
     Action_SpaceTotal = genActionSpace_T(moveset_1, moveset_2)
 else:
     print("choose a valid game")
+    exit(1)
 
 colnames = Action_SpaceTotal[0]
 rownames = Action_SpaceTotal[1]
@@ -111,7 +124,6 @@ for j in range(0, len(rownames)):
 # Here we set the row names and column names first
 ActionFrame_df = pd.DataFrame(columns=colnames_str, index=rownames_str)
 # then we assign their respective values
-# bu donguyu kurana kadar omrum bitti
 for i in range(0, len(rownames)):
     for j in range(0, len(colnames)):
         ActionFrame_df.iloc[j, i] = tuple((colnames[i] + rownames[j]))
@@ -137,7 +149,12 @@ UtilityFrame1_df = UtilityFrame1_df.astype(float)
 UtilityFrame2_df = UtilityFrame2_df.astype(float)
 
 
-# finds the best response function with ties included
+#finds the best response function with ties included
+#sources:
+#https://stackoverflow.com/questions/67230827/pandas-dataframe-select-column-by-boolean-values-in-matching-dataframe
+#https://stackoverflow.com/questions/37362984/select-from-pandas-dataframe-using-boolean-series-array/37365260
+#https://stackoverflow.com/questions/21800169/python-pandas-get-index-of-rows-which-column-matches-certain-value
+
 def findBR(Payoff_1, Payoff_2):
     BR_1 = []
     BR_2 = []
@@ -158,6 +175,8 @@ def findBR(Payoff_1, Payoff_2):
 
 
 # format the best response functions in order to easily compute the NE
+#https://stackoverflow.com/questions/3697432/how-to-find-list-intersection
+
 def formatBR(l1):
     nl_1 = []
     for i in range(len(l1)):
@@ -173,8 +192,9 @@ finalBR_1 = formatBR(findBR(UtilityFrame1_df, UtilityFrame2_df)[0])
 finalBR_2 = formatBR((findBR(UtilityFrame1_df, UtilityFrame2_df))[1])
 
 NE = list(set(finalBR_1) & set(finalBR_2))
-
-print("Nash Equilibrium/Equilibria is/are " + str(NE))
-print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
-
-
+if NE != []:
+    print("Nash Equilibrium/Equilibria is/are " + str(NE))
+    print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
+else:
+    print("There seems to be no pure strategy NE")
+    print("If you are sure there is one notify Can Güriz")
