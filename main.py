@@ -198,4 +198,3 @@ if NE != []:
     print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
 else:
     print("There seems to be no pure strategy NE")
-    print("If you are sure there is one notify Can Güriz")
