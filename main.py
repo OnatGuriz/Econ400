@@ -50,5 +50,7 @@ if (inputOrNo == "Y"):
         config.M_1 = int(input("Agent 1 Budget: "))
         config.M_2 = int(input("Agent 2 Budget: "))
 
+if (inputOrNo == "N"):
+    exit(1)
 
 NECompute()
