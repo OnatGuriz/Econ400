@@ -138,10 +138,34 @@ def NECompute ():
     finalBR_2 = formatBR((findBR(config.UtilityFrame1_df, config.UtilityFrame2_df))[1])
     config.NE = list(set(finalBR_1) & set(finalBR_2))
     if config.NE != []:
-        print("Nash Equilibrium/Equilibria is/are " + str(config.NE))
-        print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
+        #print("Nash Equilibrium/Equilibria is/are " + str(config.NE))
+        #print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
+        return config.NE
     else:
         print("There seems to be no pure strategy NE")
 
 
 
+def getValueNE ():
+    fvalue = []
+    returnvalue = ()
+    value = NECompute()
+    final = []
+
+    #split different nash eq into diffrent list elements
+
+    for i in  range(0, len(value)):
+        fvalue.append(value[i].split(') , ('))
+
+    #take those list elements and turn into 1 large tuple
+
+    for j in range(0, len(fvalue)):
+        for k in range(0, len(fvalue[j])):
+            fvalue[j][k] = (fvalue[j][k].replace(')', '').replace('(', ''))
+            returnvalue += tuple(map(int, fvalue[j][k].split(',')))
+
+    #combine every Nash Eq in tuples
+    #for example 0 and 1 get together 2 and 3 get together
+    for l in range(0, (len(returnvalue)),2):
+        final.append(returnvalue[l:l+2])
+    return tuple(final)

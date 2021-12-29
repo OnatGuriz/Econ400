@@ -23,7 +23,7 @@ if(inputOrNo == "Y"):
 if(inputOrNo == "Y"):
     config.gametype = input("Transfer (T) or No Transfer (NT)")
 
-#https://blog.finxter.com/how-to-convert-a-string-list-to-an-integer-list-in-python/
+#Do we want to compute NE with an input or not
 if (inputOrNo == "Y"):
     if(config.gametype == "NT"):
         movesetSaving1_input =  input("Enter all possible saving moves of agent 1 separated by space : ")
@@ -51,6 +51,24 @@ if (inputOrNo == "Y"):
         config.M_2 = int(input("Agent 2 Budget: "))
 
 if (inputOrNo == "N"):
-    exit(1)
+    config.gametype = "T"
+    config.movesetSaving1 = [0, 100 , 200 , 300 , 400]
+    config.movesetSaving2 = [0, 100 , 200 , 300 , 400]
+    config.movesetRecog1 = [0, 100 , 200 , 300 , 400]
+    config.movesetRecog2 = [0, 100 , 200 , 300 , 400]
 
-NECompute()
+    config.movesetS_1 = [0, 100 , 200 , 300 , 400]
+    config.movesetS_2 = [0, 100 , 200 , 300 , 400]
+    config.movesetR_1 = [0, 100 , 200 , 300 , 400]
+    config.movesetR_2 = [0, 100 , 200 , 300 , 400]
+
+    config.M_1 = 400
+    config.M_2 = 400
+
+    config.ar_1 = 1
+    config.ar_2 = 1
+    config.as_1 = 3
+    config.as_2 = 3
+
+
+print(getValueNE())
