@@ -142,7 +142,7 @@ def NECompute ():
         #print("Format is ['(e^s_1 , e^r_1 ),(e^s_2 , e^r_2)']")
         return config.NE
     else:
-        print("There seems to be no pure strategy NE")
+        return config.NE
 
 
 

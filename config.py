@@ -29,3 +29,7 @@ UtilityFrame1_df = []
 UtilityFrame2_df = []
 UtilityFrameTotal_df = []
 NE = []
+
+
+SavingTalents = []
+RecogTalents = []

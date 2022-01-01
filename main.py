@@ -4,8 +4,6 @@ Created on Thu Nov 11 13:07:32 2021
 
 @author: cangu
 """
-import itertools
-import pandas as pd
 from Functions import *
 import config
 
@@ -65,10 +63,74 @@ if (inputOrNo == "N"):
     config.M_1 = 400
     config.M_2 = 400
 
-    config.ar_1 = 1
+    config.ar_1 = 2
     config.ar_2 = 1
     config.as_1 = 3
     config.as_2 = 3
 
+#seperates the Nash Eqm into players moves in order to graph
+def sortresult(input):
+    pl_1_r = []
+    pl_1_s = []
+    pl_2_r = []
+    pl_2_s = []
+    for i in range (0, len(input)):
+        if i % 2 == 0:
+            pl_1_s.append(input[i][0])
+            pl_1_r.append(input[i][1])
+        if i % 2 == 1:
+            pl_2_s.append(input[i][0])
+            pl_2_r.append(input[i][1])
+    return pl_1_s , pl_1_r , pl_2_s, pl_2_r
 
-print(getValueNE())
+config.SavingTalents = [1, 2, 3 ,4 ,5 ,6, 7, 8 , 9 ,10]
+config.RecogTalents = [1, 2, 3, 4, 5, 6, 7,8 , 9 ,10]
+print(sortresult(getValueNE()))
+def Grapher_Recog():
+    resultpl_1_s = []
+    resultpl_1_r = []
+    resultpl_2_s = []
+    resultpl_2_r = []
+    resultNE = []
+    for value in config.RecogTalents:
+        config.ar_1 = value
+        resultNE = sortresult(getValueNE())
+        if (resultNE != ([],[],[],[])):
+            resultpl_1_s.append(resultNE[0])
+            resultpl_1_r.append(resultNE[1])
+            resultpl_2_s.append(resultNE[2])
+            resultpl_2_r.append(resultNE[3])
+        if(resultNE == ([],[],[],[])):
+            resultpl_1_s.append("NaN")
+            resultpl_1_r.append("NaN")
+            resultpl_2_s.append("NaN")
+            resultpl_2_r.append("NaN")
+    return resultpl_1_s, resultpl_1_r, resultpl_2_s, resultpl_2_r
+
+def Grapher_Saving(possibleTalentsS):
+    resultpl_1_s = []
+    resultpl_1_r = []
+    resultpl_2_s = []
+    resultpl_2_r = []
+    resultNE = []
+    for value in config.SavingTalents:
+        config.as_1 = value
+        resultNE = sortresult(getValueNE())
+        if (resultNE != ([],[],[],[])):
+            resultpl_1_s.append(resultNE[0])
+            resultpl_1_r.append(resultNE[1])
+            resultpl_2_s.append(resultNE[2])
+            resultpl_2_r.append(resultNE[3])
+        if(resultNE == ([],[],[],[])):
+            resultpl_1_s.append("NaN")
+            resultpl_1_r.append("NaN")
+            resultpl_2_s.append("NaN")
+            resultpl_2_r.append("NaN")
+    return resultpl_1_s, resultpl_1_r, resultpl_2_s, resultpl_2_r
+
+print(Grapher_Recog()[0])
+print(Grapher_Recog()[1])
+print(Grapher_Recog()[2])
+print(Grapher_Recog()[3])
+
+#ToDo index these new lists as dictionaries with respect to the ar_1 and as_1 values then graph them
