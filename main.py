@@ -87,9 +87,6 @@ def sortresult(input):
 config.SavingTalents = [1, 2, 3 ,4 ,5 ,6, 7, 8 , 9 ,10]
 config.RecogTalents = [1, 2, 3, 4, 5, 6, 7,8 , 9 ,10]
 
-print(NECompute())
-print(sortresult(getValueNE()))
-
 def Grapher(variable_name):
     resultpl_1_s = []
     resultpl_1_r = []
@@ -134,5 +131,25 @@ def Grapher(variable_name):
 
 
 print(Grapher("Saving")[0])
+print(Grapher("Saving")[1])
+print(Grapher("Saving")[2])
+print(Grapher("Saving")[3])
 
-#ToDo graph the dictionaries with respect to the keys
+Grapher = Grapher("Saving")
+
+
+plt.rcParamsDefault
+plt.xlim(0,10)
+plt.ylim(0, max(config.M_1,config.M_2) + 100)
+plt.grid()
+for key in Grapher[0]:
+    if(Grapher[0][key] == "NaN"):
+        continue
+    for i in range(len(Grapher[0][key])):
+        plt.plot(key, Grapher[0][key][i], marker ="o", markerfacecolor = "red", mec = "red", c = "red")
+        plt.plot(key, Grapher[1][key][i], marker = "o", markerfacecolor = "blue", mec = "blue", c = "blue")
+        plt.plot(key, Grapher[2][key][i], marker="o", markerfacecolor="green", mec = "green" , c = "green")
+        plt.plot(key, Grapher[3][key][i], marker="o", markerfacecolor="yellow", mec = "yellow" , c = "yellow")
+plt.show()
+
+#ToDo bad graph is working for now fix the aesthetics of the graph and redo it
